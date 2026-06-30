@@ -6,8 +6,18 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.options("*", cors());
+// 🔥 강제 CORS 처리 (핵심)
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(204);
+    }
+
+    next();
+});
 
 app.use(express.json({ limit: "10mb" }));
 
@@ -39,8 +49,6 @@ app.post("/api/analyze", async (req, res) => {
         );
 
         const data = await response.json();
-
-        res.setHeader("Access-Control-Allow-Origin", "*");
 
         res.json({
             result: data.candidates?.[0]?.content?.parts?.[0]?.text || "no result"
