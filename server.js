@@ -1,9 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
+app.use(cors({
+    origin: "https://singiwon.github.io"
+}));
 app.use(express.json({ limit: "10mb" }));
 
 const API_KEY = process.env.GEMINI_API_KEY;
